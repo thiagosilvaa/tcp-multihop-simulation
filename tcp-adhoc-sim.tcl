@@ -20,9 +20,9 @@ set opt(y)              670
 set opt(ifqlen)         50   
 set opt(tr)          	tcp-adhoc-sim.tr
 set opt(namtr)       	tcp-adhoc-sim.nam
-set opt(nn)             4                       
+set opt(nn)             2                       
 set opt(rp)   		AODV                        
-set opt(stop)           60
+set opt(stop)           130
 set opt(tcp)		TCP                           
 
 #Captura parametros de entrada da simulacao
@@ -89,10 +89,12 @@ set sink [new Agent/TCPSink]
 $ns attach-agent $node_(0) $tcp
 $ns attach-agent $node_([expr $opt(nn) - 1]) $sink
 $ns connect $tcp $sink
+$tcp set window_ 32
+$tcp set packetSize_ 512
 set ftp [new Application/FTP]
 $ftp attach-agent $tcp
 $ns at 5.0 "$ftp start"
-$ns at 55.0 "$ftp stop"
+$ns at 125.0 "$ftp stop"
 
 #Define tamanho dos nos no nam
 for {set i 0} {$i < $opt(nn)} {incr i} {
@@ -110,7 +112,7 @@ proc finish {} {
     	$ns flush-trace
    	close $namtracefd
     	close $tracefd
-    	exec nam tcp-adhoc-sim.nam &
+    	#exec nam tcp-adhoc-sim.nam &
     	exit 0
 }
 
